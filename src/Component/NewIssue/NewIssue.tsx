@@ -1,0 +1,296 @@
+import { Button, TextField, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import ErrorIcon from "@mui/icons-material/Error";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import { useEffect, useState } from "react";
+import "./NewIssue.css";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import useGetCurrentUser from "../../utils/Hooks/useGetCurrentUser";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import { Book } from "@mui/icons-material";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import { pink } from "@mui/material/colors";
+function NewIssue({ data, setShowIssue, handleNewIssueClick, user }) {
+  const [issueType, setIssueType] = useState("");
+  const [column, setColumn] = useState("");
+  const [newIssue, setNewIssue] = useState("");
+  const [assignee, setAssignee] = useState("");
+  const currentUser = useGetCurrentUser();
+  const [reporter, setReporter] = useState("");
+  const [priority, setPriority] = useState("");
+  const [description, setDescription] = useState("");
+  const [value, setValue] = useState("");
+  useEffect(() => {
+    setReporter(currentUser[0]?.name);
+  }, [currentUser]);
+
+  const handleIssueType = (e) => {
+    console.log(e.target.value);
+    setIssueType(e.target.value);
+  };
+  const handleChange = (event) => {
+    setIssueType(event.target.value);
+  };
+  const handleAssignee = (e) => {
+    setAssignee(e.target.value);
+  };
+  const handleReporter = (e) => {
+    setReporter(e.target.value);
+  };
+
+  const handlePriority = (e) => {
+    setPriority(e.target.value);
+  };
+
+  const handleCreate = () => {
+    handleNewIssueClick(
+      issueType,
+      column,
+      newIssue,
+      description,
+      assignee,
+      reporter,
+      priority
+    );
+    setShowIssue(false);
+  };
+  return (
+    <Box className="newissue-overlay">
+      <Box
+        sx={{
+          borderRadius: 2,
+          marginTop: 55,
+          height: "1000px",
+          marginBottom: 3,
+        }}
+        className="newissue-card"
+      >
+        <Typography
+          variant="h5"
+          sx={{ marginRight: 71, marginBottom: 5, fontWeight: "bold" }}
+        >
+          Create issue
+        </Typography>
+        <Box sx={{ width: 700 }}>
+          <Typography
+            sx={{
+              color: "#5E6C84",
+              fontSize: "13px",
+              marginBottom: 1,
+              fontWeight: "bold",
+            }}
+          >
+            Issue Type
+          </Typography>
+          <FormControl fullWidth>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={issueType}
+              onChange={handleIssueType}
+              required
+              autoFocus
+              sx={{
+                backgroundColor: "#F4F5F7",
+                height: 30,
+              }}
+            >
+              <MenuItem value={"bug"}>
+                <Box sx={{ display: "flex" }}>
+                  <ErrorIcon sx={{ color: pink[500] }} />
+                  Bug
+                </Box>
+              </MenuItem>
+              <MenuItem value="Task">
+                <Box sx={{ display: "flex" }}>
+                  <CheckBoxIcon color="primary" />
+                  Task
+                </Box>
+              </MenuItem>
+              <MenuItem value="Story">
+                {" "}
+                <Box sx={{ display: "flex" }}>
+                  <BookmarkIcon color="success" />
+                  Story
+                </Box>
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ width: 700, marginTop: 3 }}>
+          <Typography
+            sx={{
+              color: "#5E6C84",
+              fontSize: "13px",
+              marginBottom: 1,
+              fontWeight: "bold",
+            }}
+          >
+            Column Name
+          </Typography>
+          <FormControl fullWidth>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={column}
+              onChange={(e) => setColumn(e.target.value)}
+              required
+              sx={{
+                backgroundColor: "#F4F5F7",
+                height: 30,
+              }}
+            >
+              {Object.entries(data).map((key, index) => {
+                return (
+                  <MenuItem value={key[0]} key={index}>
+                    {key[0]}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ marginTop: 4 }}>
+          <Typography
+            sx={{ color: "#5E6C84", fontSize: "13px", marginBottom: 1 }}
+          >
+            Short Summary
+          </Typography>
+          <TextField
+            placeholder="Enter your issue "
+            value={newIssue}
+            onChange={(e) => setNewIssue(e.target.value)}
+            sx={{ width: 700, backgroundColor: "#F4F5F7" }}
+            size="small"
+          />
+          <Typography
+            sx={{ color: "#5E6C84", fontSize: "13px", marginBottom: 1 }}
+          >
+            Concisely summarize the issue in one or two sentences.
+          </Typography>
+        </Box>
+
+        <Box sx={{ marginTop: 4, width: 700 }}>
+          <Typography
+            sx={{ color: "#5E6C84", fontSize: "13px", marginBottom: 1 }}
+          >
+            Description
+          </Typography>
+          <ReactQuill
+            className="texteditor"
+            placeholder="Description"
+            theme="snow"
+            value={description}
+            onChange={setDescription}
+          />
+        </Box>
+
+        <Box sx={{ width: 700, marginTop: 10 }}>
+          <Typography
+            sx={{ color: "#5E6C84", fontSize: "13px", marginBottom: 1 }}
+          >
+            Reporter
+          </Typography>
+
+          <FormControl fullWidth>
+            <Select
+              labelId="reporter"
+              id="reporter"
+              value={reporter}
+              onChange={handleReporter}
+              required
+              sx={{
+                backgroundColor: "#F4F5F7",
+                height: 30,
+              }}
+            >
+              {user.map((key, index) => {
+                return (
+                  <MenuItem value={key.name} key={index}>
+                    {key.name}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ width: 700, marginTop: 1 }}>
+          <Typography
+            sx={{ color: "#5E6C84", fontSize: "13px", marginBottom: 1 }}
+          >
+            Assignee
+          </Typography>
+          <FormControl fullWidth>
+            <Select
+              labelId="assignee"
+              id="assignee"
+              value={assignee}
+              onChange={handleAssignee}
+              required
+              sx={{
+                backgroundColor: "#F4F5F7",
+                height: 30,
+              }}
+            >
+              {user.map((key, index) => {
+                return (
+                  <MenuItem value={key.name} key={index}>
+                    {key.name}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+          <Button
+            onClick={() => setAssignee(currentUser[0]?.name)}
+            size="small"
+          >
+            Assign to me
+          </Button>
+        </Box>
+        <Box sx={{ width: 700, marginTop: 1 }}>
+          <Typography
+            sx={{ color: "#5E6C84", fontSize: "13px", marginBottom: 1 }}
+          >
+            Priority
+          </Typography>
+          <FormControl fullWidth>
+            <Select
+              labelId="Priority"
+              id="Priority"
+              value={priority}
+              onChange={handlePriority}
+              required
+              sx={{
+                backgroundColor: "#F4F5F7",
+                height: 30,
+              }}
+            >
+              <MenuItem value="Highest">Highest</MenuItem>
+              <MenuItem value="High">High</MenuItem>
+              <MenuItem value="Medium">Medium</MenuItem>
+              <MenuItem value="Low">Low</MenuItem>
+              <MenuItem value="Lowest">Lowest</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ marginTop: 4, marginLeft: 60 }}>
+          <Button
+            sx={{ marginLeft: 1 }}
+            variant="contained"
+            onClick={handleCreate}
+            sx={{ marginRight: 4 }}
+          >
+            Create
+          </Button>
+          <Button onClick={() => setShowIssue(false)}>Cancel</Button>
+        </Box>
+      </Box>
+    </Box>
+  );
+}
+
+export default NewIssue;

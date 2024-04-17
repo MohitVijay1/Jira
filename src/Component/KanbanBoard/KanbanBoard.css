@@ -1,0 +1,46 @@
+/* App.css */
+
+.App {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  
+  .column {
+    width: 30%;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+  }
+  
+  .column h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+  
+  .column div {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .column div:hover {
+    background-color: #f9f9f9;
+  }
+  
+  .column div:active {
+    background-color: #e9e9e9;
+  }
+  
+  .column div[draggable="true"] {
+    /* Add dragging styles */
+  }
+  
+  .column div[draggable="true"]:hover {
+    /* Add dragging hover styles */
+  }
+  
