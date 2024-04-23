@@ -5,6 +5,8 @@ import "./AddProject.css";
 import MultipleSelectChip from "./MultipleSelectChip";
 import { useNavigate } from "react-router-dom";
 import { Button, TextField, Typography } from "@mui/material";
+import useGetUser from "../../utils/Hooks/useGetUser";
+import { Box } from "@mui/system";
 
 function AddProject() {
   const [user, setUser] = useState([]);
@@ -12,29 +14,32 @@ function AddProject() {
   const [projectDescription, setProjectDescription] = useState("");
   const [selectedName, setSelectedName] = useState([]);
   const navigate = useNavigate();
+  const userData = useGetUser();
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await getDocs(collection(db, "users"));
-      const newData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-
-      setUser(newData);
-    };
-    fetchData();
-  }, []);
+    setUser(userData);
+  }, [userData]);
   const handleSelectChange = (e) => {
     setSelectedName(e);
   };
   const handleCreateProject = async () => {
-    await addDoc(collection(db, "projects"), {
+    const res = await addDoc(collection(db, "projects"), {
       name: projectName,
       description: projectDescription,
       teamMembers: selectedName,
+      data: { ToDo: [], InProgress: [], Done: [] },
     });
+
+    navigate(`/project/${res.id}`);
   };
 
   return (
     <div className="overlay">
-      <div className="card">
+      <Box
+        className="card"
+        sx={{
+          borderRadius: 3,
+        }}
+      >
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           Add New Project
         </Typography>
@@ -47,6 +52,8 @@ function AddProject() {
             type="text"
             label="Project Name"
             onChange={(e) => setProjectName(e.target.value)}
+            sx={{ width: "300px" }}
+            autoFocus
           />
         </div>
         <div>
@@ -58,6 +65,7 @@ function AddProject() {
             type="text"
             label="Project Description"
             onChange={(e) => setProjectDescription(e.target.value)}
+            sx={{ width: "300px" }}
           />
         </div>
 
@@ -67,29 +75,21 @@ function AddProject() {
             handleSelectChange={handleSelectChange}
           />
         </div>
-        <div>
-          <Button
-            sx={{
-              marginTop: 1,
-            }}
-            variant="contained"
-            onClick={handleCreateProject}
-          >
+        <Box sx={{ display: "flex", marginTop: 5 }}>
+          <Button variant="contained" onClick={handleCreateProject}>
             Create Project
           </Button>
-        </div>
-        <Button
-          sx={{
-            marginTop: 1,
-          }}
-          variant="contained"
-          onClick={() => {
-            navigate("/homepage");
-          }}
-        >
-          Cancel
-        </Button>
-      </div>
+          <Button
+            variant="oulined"
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+            sx={{ color: "blue" }}
+          >
+            Cancel
+          </Button>
+        </Box>
+      </Box>
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { db } from "../../firebase";
 import KanbanBoard from "../KanbanBoard/KanbanBoard";
 import useGetUser from "../../utils/Hooks/useGetUser";
+import { Box } from "@mui/system";
 
 function Project() {
   const { projectId } = useParams();
@@ -29,7 +30,19 @@ function Project() {
   if (!project) return <h1>Loading..</h1>;
   return (
     <div>
-      <div>{project[0]?.name}</div>
+      <Box
+        sx={{
+          marginLeft: 10,
+          marginBottom: 5,
+          marginTop: 5,
+          color: "#5E6C84",
+        }}
+      >
+        Projects<span> / </span>
+        {project[0]?.name}
+        <span> / </span>Kanban Board
+      </Box>
+
       <div>
         <KanbanBoard project={project} projectId={projectId} user={user} />
       </div>

@@ -6,6 +6,7 @@ import ProtectedRoute from "./Component/ProtectedRoute";
 import AddProject from "./Component/AddProject/AddProject";
 import Header from "./Component/Header/Header";
 import Project from "./Component/Project/Project";
+import Dashboard from "./Dashboard/Dashboard";
 
 const Route = createBrowserRouter([
   {
@@ -21,11 +22,11 @@ const Route = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: "/homepage",
+        path: "/dashboard",
         element: (
           <>
             <Header />
-            <HomePage />
+            <Dashboard />
           </>
         ),
       },

@@ -1,7 +1,21 @@
-
+.newissue-overlay{
+    position: absolute;
+   top:0;
+   left: 0;
+    width: 100%;
+    height: 100%;
+    background-color:#091E427D ; /* Adjust transparency as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 20;
+    transition: opacity 0.3s ease;
+    /* flex-direction: column; */
+    overflow: scroll;
+    overflow-x: hidden;
+}
 .newissue-card{
     width: 800px;
-    height: 1000px;
     
     background-color: white;
     display: flex;
@@ -9,7 +23,6 @@
     justify-content: center;
     
     align-items: center;
-    margin-right: 100px;
    
     
   }

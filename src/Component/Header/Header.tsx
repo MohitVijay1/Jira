@@ -1,31 +1,29 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import logo from "../../assert/logo.jpg";
+import useGetProjects from "../../utils/Hooks/useGetProjects";
+import useGetCurrentUser from "../../utils/Hooks/useGetCurrentUser";
 
 function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
   const [projects, setProjects] = useState([]);
+  const [currentUserName, setCurrentUserName] = useState("R");
   const navigate = useNavigate();
+  const user = useGetCurrentUser();
 
   const handleLogOut = () => {
     signOut(auth).then(() => {
@@ -33,16 +31,12 @@ function ResponsiveAppBar() {
       navigate("/login");
     });
   };
+  const project = useGetProjects();
+
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await getDocs(collection(db, "projects"));
-
-      const newData = res.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-
-      setProjects(newData);
-    };
-    fetchData();
-  }, []);
+    setProjects(project);
+    setCurrentUserName(user[0]?.name.toUpperCase());
+  }, [project, user]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -78,11 +72,9 @@ function ResponsiveAppBar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/dashboard"
             sx={{
               mr: 2,
-              ml: 2,
-              display: { xs: "none", md: "flex" },
               fontFamily: "monospace",
               fontWeight: 700,
               letterSpacing: ".3rem",
@@ -100,59 +92,11 @@ function ResponsiveAppBar() {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
-            >
-              {/* <MenuIcon /> */}
-            </IconButton>
-            {/* <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Typography textAlign="center">page</Typography>
-              </MenuItem>
-            </Menu> */}
+            ></IconButton>
           </Box>
-          {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
-          {/* <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            LOGO
-          </Typography> */}
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Button
-              // key={page}
               onClick={handleCloseNavMenu}
               sx={{ my: 2, color: "white", display: "block" }}
             >
@@ -164,15 +108,16 @@ function ResponsiveAppBar() {
                   Projects
                 </Button>
                 <div className="dropdown-content">
-                  {projects.map((project, index) => {
-                    return (
-                      <div key={index}>
-                        <Link to={`/project/${project.id}`}>
-                          {project.name}
-                        </Link>
-                      </div>
-                    );
-                  })}
+                  {projects &&
+                    projects.map((project, index) => {
+                      return (
+                        <div key={index}>
+                          <Link to={`/project/${project.id}`}>
+                            {project.name}
+                          </Link>
+                        </div>
+                      );
+                    })}
 
                   <Link to="/addproject">Add New Project</Link>
                 </div>
@@ -186,7 +131,10 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt={currentUserName}
+                  src="/static/images/avatar/2.jpg"
+                />
               </IconButton>
             </Tooltip>
 

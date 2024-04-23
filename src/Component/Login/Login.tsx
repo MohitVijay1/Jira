@@ -26,7 +26,7 @@ export default function Login() {
     return <span>Loading...</span>;
   }
   if (user) {
-    navigate("/homepage");
+    navigate("/dashboard");
   }
   const handleLogin = async () => {
     await loginUser(email, password).then((res) => console.log(res));

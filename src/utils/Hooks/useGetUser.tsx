@@ -11,8 +11,10 @@ function useGetUser() {
         ...doc.data(),
         id: doc.id,
       }));
+
       setUser(userData);
     };
+
     fetchData();
   }, []);
   return user;

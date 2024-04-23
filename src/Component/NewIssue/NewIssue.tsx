@@ -10,10 +10,14 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import useGetCurrentUser from "../../utils/Hooks/useGetCurrentUser";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
-import { Book } from "@mui/icons-material";
+import { KeyboardDoubleArrowDown } from "@mui/icons-material";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import { pink } from "@mui/material/colors";
-function NewIssue({ data, setShowIssue, handleNewIssueClick, user }) {
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import useGetUser from "../../utils/Hooks/useGetUser";
+
+function NewIssue({ data, setShowIssue, handleNewIssueClick }) {
   const [issueType, setIssueType] = useState("");
   const [column, setColumn] = useState("");
   const [newIssue, setNewIssue] = useState("");
@@ -22,7 +26,9 @@ function NewIssue({ data, setShowIssue, handleNewIssueClick, user }) {
   const [reporter, setReporter] = useState("");
   const [priority, setPriority] = useState("");
   const [description, setDescription] = useState("");
-  const [value, setValue] = useState("");
+
+  const user = useGetUser();
+
   useEffect(() => {
     setReporter(currentUser[0]?.name);
   }, [currentUser]);
@@ -133,8 +139,6 @@ function NewIssue({ data, setShowIssue, handleNewIssueClick, user }) {
           </Typography>
           <FormControl fullWidth>
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
               value={column}
               onChange={(e) => setColumn(e.target.value)}
               required
@@ -269,11 +273,36 @@ function NewIssue({ data, setShowIssue, handleNewIssueClick, user }) {
                 height: 30,
               }}
             >
-              <MenuItem value="Highest">Highest</MenuItem>
-              <MenuItem value="High">High</MenuItem>
-              <MenuItem value="Medium">Medium</MenuItem>
-              <MenuItem value="Low">Low</MenuItem>
-              <MenuItem value="Lowest">Lowest</MenuItem>
+              <MenuItem value="Highest">
+                <Box sx={{ display: "flex" }}>
+                  <KeyboardDoubleArrowUpIcon sx={{ color: "#880808" }} />
+                  Highest
+                </Box>
+              </MenuItem>
+              <MenuItem value="High">
+                <Box sx={{ display: "flex" }}>
+                  <KeyboardDoubleArrowUpIcon sx={{ color: "#D70040" }} />
+                  High
+                </Box>
+              </MenuItem>
+              <MenuItem value="Medium">
+                <Box sx={{ display: "flex" }}>
+                  <ExpandLessIcon sx={{ color: "FFD700" }} />
+                  Medium
+                </Box>
+              </MenuItem>
+              <MenuItem value="Low">
+                <Box sx={{ display: "flex" }}>
+                  <KeyboardDoubleArrowDown sx={{ color: "#008000" }} />
+                  Low
+                </Box>
+              </MenuItem>
+              <MenuItem value="Lowest">
+                <Box sx={{ display: "flex" }}>
+                  <KeyboardDoubleArrowDown sx={{ color: "#7CFC00" }} />
+                  Lowest
+                </Box>
+              </MenuItem>
             </Select>
           </FormControl>
         </Box>

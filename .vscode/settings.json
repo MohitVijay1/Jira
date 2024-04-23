@@ -1,0 +1,9 @@
+{
+    "workbench.colorCustomizations": {
+    
+        "editorMultiCursor.primary.foreground": "#ff0000",
+        // "editorMultiCursor.primary.background": "#ff0000",
+        // "editorMultiCursor.secondary.background": "#00ff2a",
+        "editorMultiCursor.secondary.foreground": "#e5ff00"
+      }
+}

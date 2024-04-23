@@ -3,7 +3,17 @@ import DraggableColumns from "../DraggableColumns/DraggableColumns";
 import { db } from "../../firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import NewIssue from "../NewIssue/NewIssue";
-import { Box, Button, Modal, TextField } from "@mui/material";
+import {
+  Avatar,
+  AvatarGroup,
+  Box,
+  Button,
+  InputAdornment,
+  Modal,
+  TextField,
+  Tooltip,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
@@ -14,10 +24,25 @@ const KanbanBoard = ({ project, projectId, user }) => {
   const [showIssue, setShowIssue] = useState(false);
   const [showColumn, setShowColumn] = useState(false);
   const [newColumn, setNewColumn] = useState("");
+  const [search, setSearch] = useState("");
+  const [teamMembers, setTeamMembers] = useState();
 
   const handleClick = () => {
     setData({ ...data, [newColumn]: [] });
+
     setShowColumn(false);
+  };
+  const handleDelete = (task) => {
+    const column = task.column;
+
+    const newData = data[column].filter(
+      (item) => JSON.stringify(item) !== JSON.stringify(task)
+    );
+
+    const newData1 = data;
+    newData1[column] = newData;
+
+    setData(newData1);
   };
   const handleNewIssueClick = (
     issueType,
@@ -80,7 +105,8 @@ const KanbanBoard = ({ project, projectId, user }) => {
     setData(newData);
   };
   useEffect(() => {
-    setData(project[0].data);
+    setData(project[0]?.data);
+    setTeamMembers(project[0]?.teamMembers);
   }, [project]);
   useEffect(() => {
     console.log("update request has been called");
@@ -95,16 +121,52 @@ const KanbanBoard = ({ project, projectId, user }) => {
   }, [data]);
 
   return (
-    <div>
+    <Box sx={{ marginLeft: 10 }}>
       <div>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            setShowIssue(!showIssue);
-          }}
-        >
-          CREATE ISSUE
-        </Button>
+        <Box sx={{ marginLeft: 1, marginBottom: 1, display: "flex" }}>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setShowIssue(!showIssue);
+            }}
+          >
+            Create Issue
+          </Button>
+
+          <TextField
+            size="small"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            sx={{
+              marginLeft: 2,
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <AvatarGroup
+            sx={{
+              marginLeft: 1,
+            }}
+          >
+            {teamMembers &&
+              teamMembers.map((people) => {
+                return (
+                  <Tooltip title={people}>
+                    <Avatar
+                      sx={{ backgroundColor: "#3f50b5" }}
+                      alt={people.toUpperCase()}
+                      src="/static/images/avatar/1.jpg"
+                    />
+                  </Tooltip>
+                );
+              })}
+          </AvatarGroup>
+        </Box>
 
         <Modal
           open={showIssue}
@@ -116,7 +178,6 @@ const KanbanBoard = ({ project, projectId, user }) => {
             data={data}
             setShowIssue={setShowIssue}
             handleNewIssueClick={handleNewIssueClick}
-            user={user}
           />
         </Modal>
       </div>
@@ -125,25 +186,18 @@ const KanbanBoard = ({ project, projectId, user }) => {
         <DraggableColumns
           data={data}
           setData={setData}
+          search={search}
           user={user}
           handleModifyData={handleModifyData}
+          handleDelete={handleDelete}
         />
         {!showColumn && (
           <Button
             onClick={() => setShowColumn(true)}
             sx={{
-              // width: 170,
-              // height: "auto",
-              // maxWidth: 400,
-              // minHeight: "100%",
-              // backgroundColor: "#F5F5F5",
               width: 170,
-              maxHeight: "auto",
-              marginTop: "20px",
-              height: "325px",
-              maxWidth: 400,
-              minHeight: "100%",
               backgroundColor: "#F5F5F5",
+              margin: 1,
             }}
           >
             <AddIcon />
@@ -169,7 +223,7 @@ const KanbanBoard = ({ project, projectId, user }) => {
         )}
       </Box>
       <div></div>
-    </div>
+    </Box>
   );
 };
 
