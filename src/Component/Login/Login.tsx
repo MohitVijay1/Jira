@@ -11,25 +11,45 @@ import Checkbox from "@mui/material/Checkbox";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+
 import Typography from "@mui/material/Typography";
 
 import { Link } from "react-router-dom";
 import "./Login.css";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [emailErrMessage, setEmailErrMessage] = useState();
+  const [passwordErrMessage, setPasswordErrMessage] = useState();
+  const [errMessage, setErrMessage] = useState();
+
   const navigate = useNavigate();
+
   const { user, loginUser, loading } = AuthProvider();
-  if (loading) {
-    return <span>Loading...</span>;
-  }
+  // if (loading) {
+  //   return <span>Loading...</span>;
+  // }
   if (user) {
     navigate("/dashboard");
   }
   const handleLogin = async () => {
-    await loginUser(email, password).then((res) => console.log(res));
+    await loginUser(email, password)
+      .then((res) => console.log(res))
+      .catch((err) => {
+        const { code, message } = err;
+        console.log(code);
+
+        if (code === "auth/invalid-email" || code === "auth/missing-email") {
+          setEmailErrMessage("Please enter a valid email");
+        }
+        if (code === "auth/missing-password") {
+          setPasswordErrMessage("Please enter a valid password");
+        }
+        if (code === "auth/invalid-credential") {
+          setErrMessage("Incorrect username or password.");
+        }
+      });
   };
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -93,6 +113,8 @@ export default function Login() {
           >
             <TextField
               margin="normal"
+              error={emailErrMessage}
+              helperText={emailErrMessage}
               required
               fullWidth
               id="email"
@@ -101,10 +123,16 @@ export default function Login() {
               autoComplete="email"
               autoFocus
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmailErrMessage("");
+                setEmail(e.target.value);
+                setErrMessage(" ");
+              }}
             />
             <TextField
               margin="normal"
+              error={passwordErrMessage}
+              helperText={passwordErrMessage}
               required
               fullWidth
               name="password"
@@ -113,8 +141,21 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPasswordErrMessage("");
+                setPassword(e.target.value);
+                setErrMessage(" ");
+              }}
             />
+            <Typography
+              sx={{
+                color: "#D32F2F",
+                fontSize: "12px",
+                marginLeft: 1,
+              }}
+            >
+              {errMessage}
+            </Typography>
 
             <Button
               type="submit"

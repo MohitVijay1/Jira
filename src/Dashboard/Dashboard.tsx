@@ -1,18 +1,15 @@
 import useGetIssue from "../utils/Hooks/useGetIssue";
-import { Typography } from "@mui/material";
+import { Paper, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-
 import Grid from "@mui/material/Grid";
-
 import Box from "@mui/material/Box";
-import Assigned from "../Component/Assigned/Assigned";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -20,7 +17,7 @@ import { pink } from "@mui/material/colors";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import { KeyboardDoubleArrowDown } from "@mui/icons-material";
-import BarChart from "../Component/BarChart/BarChart";
+import Chart from "../Component/Chart/Chart";
 
 function Dashboard() {
   const response = useGetIssue();
@@ -39,12 +36,17 @@ function Dashboard() {
     <>
       <Box sx={{ width: "100%" }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item xs={6}>
+            {issue && <Chart data={issue} />}
+          </Grid>
           <Grid
+            component={Paper}
             item
             xs={6}
             sx={{
               marginTop: 5,
-              marginLeft: 4,
+              marginLeft: 33,
+              marginBottom: 3,
               borderRadius: 2,
               borderTop: "5px solid #1976d2",
               borderBottom: "2px solid #F0F8FF",
@@ -98,6 +100,7 @@ function Dashboard() {
                                 <ErrorIcon sx={{ color: pink[500] }} />
                               )}
                             </TableCell>
+
                             <TableCell sx={{ color: "#0C66E4" }}>
                               {rows.issue}
                             </TableCell>
@@ -134,11 +137,6 @@ function Dashboard() {
               </Table>
             </TableContainer>
           </Grid>
-          <Grid item xs={6}>
-            {<BarChart data={issue} />}
-          </Grid>
-          <Grid item xs={6}></Grid>
-          <Grid item xs={6}></Grid>
         </Grid>
       </Box>
     </>

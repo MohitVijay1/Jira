@@ -229,7 +229,7 @@ function ViewIssue({
               </MenuItem>
               <MenuItem value="Medium">
                 <Box sx={{ display: "flex" }}>
-                  <ExpandLessIcon sx={{ color: "yellow" }} />
+                  <ExpandLessIcon sx={{ color: "#FFAC1C" }} />
                   Medium
                 </Box>
               </MenuItem>
@@ -245,6 +245,32 @@ function ViewIssue({
                   Lowest
                 </Box>
               </MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+        <Box sx={{ width: 675, marginTop: 5, marginLeft: 4 }}>
+          <FormControl fullWidth>
+            <InputLabel id="reporter">Reporter</InputLabel>
+            <Select
+              labelId="reporter"
+              id="reporter"
+              value={reporter}
+              label="reporter"
+              onChange={handleReporter}
+              required
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#EDEDED", // Change background color on hover
+                },
+              }}
+            >
+              {user?.map((key, index) => {
+                return (
+                  <MenuItem value={key.name} key={index}>
+                    {key.name}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
         </Box>
@@ -274,32 +300,7 @@ function ViewIssue({
             </Select>
           </FormControl>
         </Box>
-        <Box sx={{ width: 675, marginTop: 5, marginLeft: 4 }}>
-          <FormControl fullWidth>
-            <InputLabel id="reporter">Reporter</InputLabel>
-            <Select
-              labelId="reporter"
-              id="reporter"
-              value={reporter}
-              label="reporter"
-              onChange={handleReporter}
-              required
-              sx={{
-                "&:hover": {
-                  backgroundColor: "#EDEDED", // Change background color on hover
-                },
-              }}
-            >
-              {user.map((key, index) => {
-                return (
-                  <MenuItem value={key.name} key={index}>
-                    {key.name}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        </Box>
+
         <Box sx={{ marginLeft: 70, marginTop: 3 }}>
           <Button variant="contained" onClick={handleModify}>
             Modify

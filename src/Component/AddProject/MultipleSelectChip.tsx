@@ -36,10 +36,7 @@ export default function MultipleSelectChip({ user, handleSelectChange }) {
     const {
       target: { value },
     } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    setPersonName(typeof value === "string" ? value.split(",") : value);
 
     handleSelectChange(personName);
   };
@@ -67,7 +64,7 @@ export default function MultipleSelectChip({ user, handleSelectChange }) {
           )}
           MenuProps={MenuProps}
         >
-          {user.map((name) => (
+          {user?.map((name) => (
             <MenuItem
               key={name.name}
               value={name.name}

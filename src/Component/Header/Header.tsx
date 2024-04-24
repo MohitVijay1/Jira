@@ -16,6 +16,7 @@ import "./Header.css";
 import { useEffect, useState } from "react";
 import useGetProjects from "../../utils/Hooks/useGetProjects";
 import useGetCurrentUser from "../../utils/Hooks/useGetCurrentUser";
+import useGetRecentProjects from "../../utils/Hooks/useGetRecentProjects";
 
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -31,7 +32,7 @@ function ResponsiveAppBar() {
       navigate("/login");
     });
   };
-  const project = useGetProjects();
+  const project = useGetRecentProjects();
 
   useEffect(() => {
     setProjects(project);
@@ -107,20 +108,46 @@ function ResponsiveAppBar() {
                 >
                   Projects
                 </Button>
-                <div className="dropdown-content">
-                  {projects &&
-                    projects.map((project, index) => {
-                      return (
-                        <div key={index}>
-                          <Link to={`/project/${project.id}`}>
-                            {project.name}
-                          </Link>
-                        </div>
-                      );
-                    })}
 
-                  <Link to="/addproject">Add New Project</Link>
-                </div>
+                <Box className="dropdown-content" sx={{ width: "200px" }}>
+                  <Box>
+                    <Box
+                      sx={{
+                        marginTop: 2,
+                        // marginRight: "100px",
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          color: "#44546F",
+                          fontSize: "10px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Recent
+                      </Typography>
+                    </Box>
+                    {projects &&
+                      projects.map((project, index) => {
+                        return (
+                          <div key={index}>
+                            <Link to={`/project/${project.id}`}>
+                              {project.name}
+                            </Link>
+                          </div>
+                        );
+                      })}
+                  </Box>
+                  <Box
+                    sx={{
+                      border: "solid",
+                      borderTopColor: "#DCDCDC",
+                    }}
+                  >
+                    <Link to="/addproject">Create Project</Link>
+                    <Link to="/project">View all projects</Link>
+                  </Box>
+                </Box>
               </li>
             </Button>
             <Button sx={{ my: 2, color: "white", display: "block" }}>

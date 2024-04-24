@@ -1,20 +1,27 @@
 import { createBrowserRouter } from "react-router-dom";
 import Login from "./Component/Login/Login";
-import HomePage from "./Component/HomePage/HomePage";
+import {
+  ADDPROJECT,
+  DASHBOARD,
+  LOGIN,
+  PROJECT,
+  REGISTER,
+} from "./utils/Constant";
 import Register from "./Component/Register/Register";
 import ProtectedRoute from "./Component/ProtectedRoute";
 import AddProject from "./Component/AddProject/AddProject";
 import Header from "./Component/Header/Header";
 import Project from "./Component/Project/Project";
 import Dashboard from "./Dashboard/Dashboard";
+import ViewProject from "./Component/ViewProject/ViewProject";
 
 const Route = createBrowserRouter([
   {
-    path: "/login",
+    path: LOGIN,
     element: <Login />,
   },
   {
-    path: "/register",
+    path: REGISTER,
     element: <Register />,
   },
   {
@@ -22,7 +29,7 @@ const Route = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: "/dashboard",
+        path: DASHBOARD,
         element: (
           <>
             <Header />
@@ -31,7 +38,7 @@ const Route = createBrowserRouter([
         ),
       },
       {
-        path: "/addproject",
+        path: ADDPROJECT,
         element: (
           <>
             <Header />
@@ -40,7 +47,16 @@ const Route = createBrowserRouter([
         ),
       },
       {
-        path: "/project/:projectId",
+        path: PROJECT,
+        element: (
+          <>
+            <Header />
+            <ViewProject />
+          </>
+        ),
+      },
+      {
+        path: `${PROJECT}/:projectId`,
         element: (
           <>
             <Header />

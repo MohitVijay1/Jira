@@ -8,9 +8,9 @@ import {
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 
-function useGetProjects() {
+function useGetRecentProjects() {
   const [projects, setProjects] = useState();
-  const [recentProject, setRecentProject] = useState();
+
   useEffect(() => {
     const fetchData = async () => {
       const q = query(
@@ -18,19 +18,15 @@ function useGetProjects() {
         orderBy("created", "desc"),
         limit(2)
       );
-      const res = await getDocs(collection(db, "projects"));
+
       const response = await getDocs(q);
       const newDatalimit = response.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
       }));
 
-      const newData = res.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
-      setProjects(newData);
-      setRecentProject(newDatalimit);
+      setProjects(newDatalimit);
+
       console.log(newDatalimit);
     };
     fetchData();
@@ -39,4 +35,4 @@ function useGetProjects() {
   return projects;
 }
 
-export default useGetProjects;
+export default useGetRecentProjects;

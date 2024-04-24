@@ -1,4 +1,9 @@
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  serverTimestamp,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
 import "./AddProject.css";
@@ -7,12 +12,18 @@ import { useNavigate } from "react-router-dom";
 import { Button, TextField, Typography } from "@mui/material";
 import useGetUser from "../../utils/Hooks/useGetUser";
 import { Box } from "@mui/system";
+import firebase from "firebase/compat/app";
 
 function AddProject() {
   const [user, setUser] = useState([]);
   const [projectName, setProjectName] = useState("");
+  const [projectNameErr, setProjectNameErr] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
+  const [projectDescriptionErr, setProjectDescriptionErr] = useState("");
   const [selectedName, setSelectedName] = useState([]);
+
+  const [selectedNameErr, setSelectedNameErr] = useState("");
+
   const navigate = useNavigate();
   const userData = useGetUser();
   useEffect(() => {
@@ -20,13 +31,28 @@ function AddProject() {
   }, [userData]);
   const handleSelectChange = (e) => {
     setSelectedName(e);
+    setSelectedNameErr(" ");
   };
   const handleCreateProject = async () => {
+    const projectNameRegex = /^[a-zA-Z0-9 ]+$/;
+    if (!projectNameRegex.test(projectName)) {
+      setProjectNameErr("Please enter a valid project name");
+      return;
+    }
+    if (projectDescription === "") {
+      setProjectDescriptionErr("Project Description can't be empty");
+      return;
+    }
+    if (selectedName.length == 0) {
+      setSelectedNameErr("Project should contain atleast one members");
+      return;
+    }
     const res = await addDoc(collection(db, "projects"), {
       name: projectName,
       description: projectDescription,
       teamMembers: selectedName,
       data: { ToDo: [], InProgress: [], Done: [] },
+      created: serverTimestamp(),
     });
 
     navigate(`/project/${res.id}`);
@@ -50,8 +76,13 @@ function AddProject() {
             required
             fullWidth
             type="text"
+            error={projectNameErr}
+            helperText={projectNameErr}
             label="Project Name"
-            onChange={(e) => setProjectName(e.target.value)}
+            onChange={(e) => {
+              setProjectNameErr("");
+              setProjectName(e.target.value);
+            }}
             sx={{ width: "300px" }}
             autoFocus
           />
@@ -63,8 +94,13 @@ function AddProject() {
             required
             fullWidth
             type="text"
+            error={projectDescriptionErr}
+            helperText={projectDescriptionErr}
             label="Project Description"
-            onChange={(e) => setProjectDescription(e.target.value)}
+            onChange={(e) => {
+              setProjectDescriptionErr("");
+              setProjectDescription(e.target.value);
+            }}
             sx={{ width: "300px" }}
           />
         </div>
@@ -74,8 +110,17 @@ function AddProject() {
             user={user}
             handleSelectChange={handleSelectChange}
           />
+          <Typography
+            sx={{
+              color: "#D32F2F",
+              fontSize: "12px",
+              marginLeft: 1,
+            }}
+          >
+            {selectedNameErr}
+          </Typography>
         </div>
-        <Box sx={{ display: "flex", marginTop: 5 }}>
+        <Box sx={{ display: "flex", marginTop: 6 }}>
           <Button variant="contained" onClick={handleCreateProject}>
             Create Project
           </Button>

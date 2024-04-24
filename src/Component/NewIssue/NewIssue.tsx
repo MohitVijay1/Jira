@@ -17,18 +17,21 @@ import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import useGetUser from "../../utils/Hooks/useGetUser";
 
-function NewIssue({ data, setShowIssue, handleNewIssueClick }) {
+function NewIssue({ data, setShowIssue, handleNewIssueClick, name }) {
   const [issueType, setIssueType] = useState("");
-  const [column, setColumn] = useState("");
+  const [column, setColumn] = useState(name);
   const [newIssue, setNewIssue] = useState("");
   const [assignee, setAssignee] = useState("");
-  const currentUser = useGetCurrentUser();
   const [reporter, setReporter] = useState("");
   const [priority, setPriority] = useState("");
   const [description, setDescription] = useState("");
-
+  const currentUser = useGetCurrentUser();
   const user = useGetUser();
+  console.log("first-col", name);
 
+  useEffect(() => {
+    console.log("name", name);
+  }, [name]);
   useEffect(() => {
     setReporter(currentUser[0]?.name);
   }, [currentUser]);
@@ -147,7 +150,7 @@ function NewIssue({ data, setShowIssue, handleNewIssueClick }) {
                 height: 30,
               }}
             >
-              {Object.entries(data).map((key, index) => {
+              {Object.entries(data)?.map((key, index) => {
                 return (
                   <MenuItem value={key[0]} key={index}>
                     {key[0]}
@@ -239,7 +242,7 @@ function NewIssue({ data, setShowIssue, handleNewIssueClick }) {
                 height: 30,
               }}
             >
-              {user.map((key, index) => {
+              {user?.map((key, index) => {
                 return (
                   <MenuItem value={key.name} key={index}>
                     {key.name}
@@ -287,7 +290,7 @@ function NewIssue({ data, setShowIssue, handleNewIssueClick }) {
               </MenuItem>
               <MenuItem value="Medium">
                 <Box sx={{ display: "flex" }}>
-                  <ExpandLessIcon sx={{ color: "FFD700" }} />
+                  <ExpandLessIcon sx={{ color: "#FFAC1C" }} />
                   Medium
                 </Box>
               </MenuItem>

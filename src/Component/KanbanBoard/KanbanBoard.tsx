@@ -119,7 +119,7 @@ const KanbanBoard = ({ project, projectId, user }) => {
     };
     fetchData();
   }, [data]);
-
+  console.log("Data", data);
   return (
     <Box sx={{ marginLeft: 10 }}>
       <div>
@@ -152,6 +152,7 @@ const KanbanBoard = ({ project, projectId, user }) => {
             sx={{
               marginLeft: 1,
             }}
+            max={3}
           >
             {teamMembers &&
               teamMembers.map((people) => {
@@ -178,6 +179,7 @@ const KanbanBoard = ({ project, projectId, user }) => {
             data={data}
             setShowIssue={setShowIssue}
             handleNewIssueClick={handleNewIssueClick}
+            name=""
           />
         </Modal>
       </div>
@@ -190,6 +192,7 @@ const KanbanBoard = ({ project, projectId, user }) => {
           user={user}
           handleModifyData={handleModifyData}
           handleDelete={handleDelete}
+          handleNewIssueClick={handleNewIssueClick}
         />
         {!showColumn && (
           <Button

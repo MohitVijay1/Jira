@@ -1,5 +1,4 @@
 import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
-
 import { auth, db } from "../../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { useState } from "react";
@@ -9,33 +8,49 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-
 import Typography from "@mui/material/Typography";
-
 import { Link } from "react-router-dom";
 
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [nameErr, setNameErr] = useState("");
+  const [emailErr, setEmailErr] = useState("");
+  const [passwordErr, setPasswordErr] = useState("");
+
   const navigate = useNavigate();
   const handleRegister = async () => {
+    const nameRegex = /^[a-zA-Z ]+$/;
+    if (!nameRegex.test(name)) {
+      setNameErr("Please enter a valid name");
+      return;
+    }
     await createUser(email, password)
       .then(async (res) => {
         await addDoc(collection(db, "users"), {
           name: name,
           email: email,
         })
-          .then((res) => console.log(res))
+          .then(async (res) => {
+            console.log(res);
+            await signOut(auth);
+            navigate("/login");
+          })
           .catch((err) => console.log(err));
       })
-      .catch((err) => console.log(err));
-    await signOut(auth);
-    navigate("/login");
+      .catch((err) => {
+        console.log(err.code);
+        if (err.code === "auth/invalid-email") {
+          setEmailErr("Please enter a valid email");
+        }
+        if (err.code === "auth/missing-password") {
+          setPasswordErr("Please enter a valid password");
+        }
+      });
   };
 
   const { createUser } = AuthProvider();
@@ -89,6 +104,8 @@ export default function Register() {
             <TextField
               margin="normal"
               required
+              error={nameErr}
+              helperText={nameErr}
               fullWidth
               id="name"
               label="Full Name"
@@ -96,22 +113,32 @@ export default function Register() {
               autoComplete="name"
               autoFocus
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setNameErr("");
+                setName(e.target.value);
+              }}
             />
             <TextField
               margin="normal"
               required
               fullWidth
+              error={emailErr}
+              helperText={emailErr}
               id="email"
               label="Email Address"
               name="email"
               autoComplete="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailErr("");
+              }}
             />
             <TextField
               margin="normal"
               required
+              error={passwordErr}
+              helperText={passwordErr}
               fullWidth
               name="password"
               label="Password"
@@ -119,7 +146,10 @@ export default function Register() {
               id="password"
               autoComplete="current-password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setPasswordErr("");
+              }}
             />
 
             <Button
