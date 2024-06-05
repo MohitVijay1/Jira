@@ -28,6 +28,8 @@ const DraggableColumns = ({
   handleModifyData,
   handleDelete,
   handleNewIssueClick,
+  disabledButton,
+  teamMembers,
 }) => {
   const [open, setOpen] = useState(false);
   const [columns, setColumns] = useState();
@@ -98,11 +100,12 @@ const DraggableColumns = ({
             setShowIssue={setShowCreateIssue}
             handleNewIssueClick={handleNewIssueClick}
             name={showCreateIssue.column}
+            teamMembers={teamMembers}
           />
         </Box>
       </Modal>
       <Modal
-        open={open}
+        open={open && !disabledButton}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
@@ -262,19 +265,21 @@ const DraggableColumns = ({
               </Box>
             ))}
             <Box sx={{ marginLeft: 2 }}>
-              <Button
-                sx={{
-                  color: "#44546f",
-                  textTransform: "capitalize",
-                }}
-                onClick={() => {
-                  console.log(columnName);
-                  // setColumn(coloumName);
-                  setShowCreateIssue({ check: true, column: columnName });
-                }}
-              >
-                + Create
-              </Button>
+              {!disabledButton && (
+                <Button
+                  sx={{
+                    color: "#44546f",
+                    textTransform: "capitalize",
+                  }}
+                  onClick={() => {
+                    console.log(columnName);
+                    // setColumn(coloumName);
+                    setShowCreateIssue({ check: true, column: columnName });
+                  }}
+                >
+                  + Create
+                </Button>
+              )}{" "}
             </Box>
           </Box>
         ))}

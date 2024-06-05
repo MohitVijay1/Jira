@@ -1,6 +1,6 @@
 import { collection, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { db } from "../../firebase";
 import KanbanBoard from "../KanbanBoard/KanbanBoard";
 import useGetUser from "../../utils/Hooks/useGetUser";
@@ -38,7 +38,10 @@ function Project() {
           color: "#5E6C84",
         }}
       >
-        Projects<span> / </span>
+        <Link to="/project" style={{ color: "#5E6C84" }}>
+          Projects
+        </Link>
+        <span> / </span>
         {project[0]?.name}
         <span> / </span>Kanban Board
       </Box>

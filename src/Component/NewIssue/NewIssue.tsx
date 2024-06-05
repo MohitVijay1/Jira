@@ -17,7 +17,13 @@ import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import useGetUser from "../../utils/Hooks/useGetUser";
 
-function NewIssue({ data, setShowIssue, handleNewIssueClick, name }) {
+function NewIssue({
+  data,
+  setShowIssue,
+  handleNewIssueClick,
+  name,
+  teamMembers,
+}) {
   const [issueType, setIssueType] = useState("");
   const [column, setColumn] = useState(name);
   const [newIssue, setNewIssue] = useState("");
@@ -25,16 +31,10 @@ function NewIssue({ data, setShowIssue, handleNewIssueClick, name }) {
   const [reporter, setReporter] = useState("");
   const [priority, setPriority] = useState("");
   const [description, setDescription] = useState("");
+  const [members, setMembers] = useState();
   const currentUser = useGetCurrentUser();
   const user = useGetUser();
   console.log("first-col", name);
-
-  useEffect(() => {
-    console.log("name", name);
-  }, [name]);
-  useEffect(() => {
-    setReporter(currentUser[0]?.name);
-  }, [currentUser]);
 
   const handleIssueType = (e) => {
     console.log(e.target.value);
@@ -66,6 +66,16 @@ function NewIssue({ data, setShowIssue, handleNewIssueClick, name }) {
     );
     setShowIssue(false);
   };
+  useEffect(() => {
+    console.log("name", name);
+  }, [name]);
+
+  useEffect(() => {
+    setReporter(currentUser[0]?.name);
+  }, [currentUser]);
+  useEffect(() => {
+    setMembers(teamMembers);
+  }, [teamMembers]);
   return (
     <Box className="newissue-overlay">
       <Box
@@ -214,13 +224,14 @@ function NewIssue({ data, setShowIssue, handleNewIssueClick, name }) {
                 height: 30,
               }}
             >
-              {user.map((key, index) => {
-                return (
-                  <MenuItem value={key.name} key={index}>
-                    {key.name}
-                  </MenuItem>
-                );
-              })}
+              {members &&
+                members?.map((name, index) => {
+                  return (
+                    <MenuItem value={name} key={index}>
+                      {name}
+                    </MenuItem>
+                  );
+                })}
             </Select>
           </FormControl>
         </Box>
@@ -242,10 +253,11 @@ function NewIssue({ data, setShowIssue, handleNewIssueClick, name }) {
                 height: 30,
               }}
             >
-              {user?.map((key, index) => {
+              {console.log("teammember", teamMembers)}
+              {teamMembers?.map((name, index) => {
                 return (
-                  <MenuItem value={key.name} key={index}>
-                    {key.name}
+                  <MenuItem value={name} key={index}>
+                    {name}
                   </MenuItem>
                 );
               })}

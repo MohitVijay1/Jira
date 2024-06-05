@@ -12,12 +12,14 @@ import {
   Modal,
   TextField,
   Tooltip,
+  colors,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 import AddIcon from "@mui/icons-material/Add";
 import CheckIcon from "@mui/icons-material/Check";
 import ClearIcon from "@mui/icons-material/Clear";
+import useGetCurrentUser from "../../utils/Hooks/useGetCurrentUser";
 
 const KanbanBoard = ({ project, projectId, user }) => {
   const [data, setData] = useState({});
@@ -26,6 +28,9 @@ const KanbanBoard = ({ project, projectId, user }) => {
   const [newColumn, setNewColumn] = useState("");
   const [search, setSearch] = useState("");
   const [teamMembers, setTeamMembers] = useState();
+  const [currentUserName, setCurrentUserName] = useState("");
+  const [disabledButton, setDisabledButton] = useState(false);
+  const currentUser = useGetCurrentUser();
 
   const handleClick = () => {
     setData({ ...data, [newColumn]: [] });
@@ -104,10 +109,21 @@ const KanbanBoard = ({ project, projectId, user }) => {
 
     setData(newData);
   };
+  const handleDisabledButton = () => {
+    return !teamMembers
+      ?.map((member) => member?.toLowerCase())
+      .includes(currentUserName?.toLowerCase());
+  };
+
   useEffect(() => {
     setData(project[0]?.data);
     setTeamMembers(project[0]?.teamMembers);
   }, [project]);
+
+  useEffect(() => {
+    setCurrentUserName(currentUser[0]?.name);
+  }, [currentUser]);
+
   useEffect(() => {
     console.log("update request has been called");
     const fetchData = async () => {
@@ -119,27 +135,41 @@ const KanbanBoard = ({ project, projectId, user }) => {
     };
     fetchData();
   }, [data]);
-  console.log("Data", data);
+  useEffect(() => {
+    setDisabledButton(handleDisabledButton());
+  }, [teamMembers, currentUserName]);
+
   return (
     <Box sx={{ marginLeft: 10 }}>
       <div>
-        <Box sx={{ marginLeft: 1, marginBottom: 1, display: "flex" }}>
-          <Button
-            variant="contained"
-            onClick={() => {
-              setShowIssue(!showIssue);
-            }}
-          >
-            Create Issue
-          </Button>
+        <Box
+          sx={{
+            marginLeft: 1,
+            marginBottom: 1,
+            display: "flex",
+          }}
+        >
+          {!disabledButton && (
+            <Button
+              variant="contained"
+              onClick={() => {
+                setShowIssue(!showIssue);
+              }}
+              disabled={disabledButton}
+            >
+              Create Issue
+            </Button>
+          )}
 
           <TextField
             size="small"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            sx={{
-              marginLeft: 2,
-            }}
+            sx={
+              !disabledButton && {
+                marginLeft: 2,
+              }
+            }
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -177,6 +207,7 @@ const KanbanBoard = ({ project, projectId, user }) => {
         >
           <NewIssue
             data={data}
+            teamMembers={teamMembers}
             setShowIssue={setShowIssue}
             handleNewIssueClick={handleNewIssueClick}
             name=""
@@ -193,8 +224,10 @@ const KanbanBoard = ({ project, projectId, user }) => {
           handleModifyData={handleModifyData}
           handleDelete={handleDelete}
           handleNewIssueClick={handleNewIssueClick}
+          disabledButton={disabledButton}
+          teamMembers={teamMembers}
         />
-        {!showColumn && (
+        {!showColumn && !disabledButton && (
           <Button
             onClick={() => setShowColumn(true)}
             sx={{

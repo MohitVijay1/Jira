@@ -15,6 +15,7 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 
 import { Link } from "react-router-dom";
+import Snackbar from "@mui/material/Snackbar";
 import "./Login.css";
 
 export default function Login() {
@@ -23,13 +24,16 @@ export default function Login() {
   const [emailErrMessage, setEmailErrMessage] = useState();
   const [passwordErrMessage, setPasswordErrMessage] = useState();
   const [errMessage, setErrMessage] = useState();
-
+  const [snackBar, setSnackBar] = useState({
+    open: false,
+    vertical: "top",
+    horizontal: "right",
+  });
+  const { vertical, horizontal, open } = snackBar;
   const navigate = useNavigate();
 
   const { user, loginUser, loading } = AuthProvider();
-  // if (loading) {
-  //   return <span>Loading...</span>;
-  // }
+
   if (user) {
     navigate("/dashboard");
   }
@@ -47,6 +51,7 @@ export default function Login() {
           setPasswordErrMessage("Please enter a valid password");
         }
         if (code === "auth/invalid-credential") {
+          snackBar.open = true;
           setErrMessage("Incorrect username or password.");
         }
       });
@@ -59,9 +64,23 @@ export default function Login() {
       password: data.get("password"),
     });
   };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
+    setSnackBar({ ...snackBar, open: false });
+  };
   return (
     <Grid container component="main" sx={{ height: "100vh" }}>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message={errMessage}
+        key={vertical + horizontal}
+      />
       <CssBaseline />
       <Grid
         item
@@ -147,15 +166,6 @@ export default function Login() {
                 setErrMessage(" ");
               }}
             />
-            <Typography
-              sx={{
-                color: "#D32F2F",
-                fontSize: "12px",
-                marginLeft: 1,
-              }}
-            >
-              {errMessage}
-            </Typography>
 
             <Button
               type="submit"

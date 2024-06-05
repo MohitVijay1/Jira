@@ -12,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import { Button, TextField, Typography } from "@mui/material";
 import useGetUser from "../../utils/Hooks/useGetUser";
 import { Box } from "@mui/system";
-import firebase from "firebase/compat/app";
 
 function AddProject() {
   const [user, setUser] = useState([]);
@@ -47,6 +46,7 @@ function AddProject() {
       setSelectedNameErr("Project should contain atleast one members");
       return;
     }
+    console.log(selectedName);
     const res = await addDoc(collection(db, "projects"), {
       name: projectName,
       description: projectDescription,

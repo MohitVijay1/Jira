@@ -36,9 +36,10 @@ export default function MultipleSelectChip({ user, handleSelectChange }) {
     const {
       target: { value },
     } = event;
+    console.log(typeof value === "string" ? value.split(",") : value);
     setPersonName(typeof value === "string" ? value.split(",") : value);
 
-    handleSelectChange(personName);
+    handleSelectChange(typeof value === "string" ? value.split(",") : value);
   };
 
   return (

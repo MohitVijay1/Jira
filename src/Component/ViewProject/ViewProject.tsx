@@ -83,14 +83,16 @@ function ViewProject() {
             </TableHead>
             <TableBody>
               {projects &&
-                projects?.map((project) => (
-                  <TableRow>
-                    <Link to={`/project/${project.id}`}>
-                      {" "}
-                      <TableCell sx={{ color: "#0C66E4" }}>
+                projects?.map((project, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      <Link
+                        to={`/project/${project.id}`}
+                        style={{ color: "#0C66E4" }}
+                      >
                         {project.name}
-                      </TableCell>{" "}
-                    </Link>
+                      </Link>
+                    </TableCell>
                     <TableCell>Project management</TableCell>
                   </TableRow>
                 ))}

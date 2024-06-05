@@ -29,6 +29,14 @@ export default function Register() {
       setNameErr("Please enter a valid name");
       return;
     }
+    const passwordRegex =
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+    if (!passwordRegex.test(password)) {
+      setPasswordErr(
+        "Your password must be at least 8 characters long, contain 1 uppercase letter, 1 lowercase letter, and 1 number."
+      );
+    }
+
     await createUser(email, password)
       .then(async (res) => {
         await addDoc(collection(db, "users"), {
